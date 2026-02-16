@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs"
 import { ArrowLeft, Download, TrendingUp, TrendingDown, AlertTriangle, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { apiUrl } from "@/lib/api"
 import { MetricExplanationModal } from "@/components/MetricExplanationModal"
 import { InfoTip } from "@/components/InfoTip"
 import FinancialCharts from "./sections/FinancialCharts"
@@ -133,7 +134,7 @@ export default function AnalysisClient() {
         setPdfLoading(true)
         try {
             const hasInsights = !!(aiInsights?.analyst || aiInsights?.contrarian || aiInsights?.educator || aiInsights?.final_verdict)
-            const res = await fetch(`http://localhost:5002/api/report/${symbol}?insights=${hasInsights}`)
+            const res = await fetch(apiUrl(`/api/report/${symbol}?insights=${hasInsights}`))
             if (!res.ok) throw new Error("PDF generation failed")
             const blob = await res.blob()
             const url = URL.createObjectURL(blob)
@@ -155,7 +156,7 @@ export default function AnalysisClient() {
         const fetchData = async () => {
             setIsLoading(true)
             try {
-                const res = await fetch(`http://localhost:5002/api/analysis/${symbol}?include=financials&insights=true`)
+                const res = await fetch(apiUrl(`/api/analysis/${symbol}?include=financials&insights=true`))
                 const json = await res.json()
                 setData(json)
                 const hasAi = json?.ai_insights && (
@@ -195,7 +196,7 @@ export default function AnalysisClient() {
         const fetchInsights = async () => {
             setAiLoading(true)
             try {
-                const res = await fetch(`http://localhost:5002/api/insights/${symbol}?include=financials`)
+                const res = await fetch(apiUrl(`/api/insights/${symbol}?include=financials`))
                 const json = await res.json()
                 if (json?.ai_insights) {
                     setAiInsights(json.ai_insights)

@@ -4,8 +4,7 @@ import * as React from "react"
 import toast from "react-hot-toast"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5002"
+import { apiUrl } from "@/lib/api"
 
 type FormState = {
     name: string
@@ -64,7 +63,7 @@ export function ContactForm() {
 
         setIsSubmitting(true)
         try {
-            const res = await fetch(`${API_BASE_URL}/api/contact`, {
+            const res = await fetch(apiUrl("/api/contact"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

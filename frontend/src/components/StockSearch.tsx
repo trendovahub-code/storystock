@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
+import { apiUrl } from "@/lib/api"
 
 interface StockResult {
     symbol: string
@@ -66,7 +67,7 @@ export function StockSearch() {
         const fetchResults = async () => {
             setIsLoading(true)
             try {
-                const res = await fetch(`http://localhost:5002/api/search?q=${debouncedQuery}`)
+                const res = await fetch(apiUrl(`/api/search?q=${encodeURIComponent(debouncedQuery)}`))
                 const data = await res.json()
 
                 if (data.results) {
