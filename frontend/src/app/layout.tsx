@@ -51,7 +51,7 @@ export default function RootLayout({
         <AnimatedBackground />
         <Toaster position="top-right" />
         <Header />
-        <main className="relative pt-20 min-h-screen">
+        <main className="relative pt-16 md:pt-20 safe-min-h-screen overflow-x-clip">
           {children}
         </main>
         <Footer />

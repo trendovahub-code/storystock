@@ -203,7 +203,7 @@ export default function AnalysisClient() {
                 } else {
                     setAiInsights(null)
                 }
-            } catch (err) {
+            } catch {
                 console.error("Failed to fetch AI insights")
                 setAiInsights(null)
             } finally {
@@ -550,26 +550,26 @@ export default function AnalysisClient() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8 animate-slide-down">
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 animate-slide-down">
             {/* ═══ Header ═══ */}
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 bg-slate-800/90 p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden group border-t-4 border-amber-400">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 md:gap-6 mb-8 bg-slate-800/90 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl relative overflow-hidden group border-t-4 border-amber-400">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.12),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.18),transparent_55%)]" />
 
-                <div className="flex items-start gap-4 md:gap-6 relative z-10 w-full">
+                <div className="flex items-start gap-3 md:gap-6 relative z-10 w-full">
                     <Link href="/" className="no-print">
-                        <Button variant="ghost" size="icon" className="rounded-full mt-1 shrink-0 text-white/80 hover:text-white hover:bg-white/10 transition-colors">
-                            <ArrowLeft className="h-6 w-6" />
+                        <Button variant="ghost" size="icon" className="rounded-full mt-0.5 shrink-0 text-white/80 hover:text-white hover:bg-white/10 transition-colors">
+                            <ArrowLeft className="h-5 w-5 md:h-6 md:w-6" />
                         </Button>
                     </Link>
                     <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                            <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.6)" }}>{data.symbol}</h1>
+                            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.6)" }}>{data.symbol}</h1>
                             <div className="flex items-center gap-2">
-                                <Badge className="px-3 py-1 text-xs md:text-sm uppercase tracking-wider font-bold whitespace-nowrap bg-white/10 text-white border-white/20 backdrop-blur-md shadow-sm">{data.stance.overall_stance}</Badge>
+                                <Badge className="px-2.5 md:px-3 py-1 text-[10px] sm:text-xs md:text-sm uppercase tracking-wider font-bold whitespace-nowrap bg-white/10 text-white border-white/20 backdrop-blur-md shadow-sm">{data.stance.overall_stance}</Badge>
                                 <InfoTip metricKey="Overall Stance" onClick={openExplanation} light />
                             </div>
                         </div>
-                        <p className="text-xl md:text-2xl font-bold text-amber-100 mt-1 tracking-wide drop-shadow-md">{data.profile.name}</p>
+                        <p className="text-base sm:text-xl md:text-2xl font-bold text-amber-100 mt-1 tracking-wide drop-shadow-md">{data.profile.name}</p>
 
                         {/* Sector & Industry Pills */}
                         <div className="flex flex-wrap gap-2 mt-3 mb-3">
@@ -586,7 +586,7 @@ export default function AnalysisClient() {
                         </div>
 
                         {quickFacts.length > 0 && (
-                            <div className="bg-slate-900/40 rounded-xl p-3 border border-white/5 backdrop-blur-sm mt-2 max-w-3xl">
+                            <div className="bg-slate-900/40 rounded-xl p-2.5 sm:p-3 border border-white/5 backdrop-blur-sm mt-2 max-w-3xl">
                                 <div className="flex flex-wrap gap-2">
                                     {quickFacts.map((fact) => (
                                         <div key={fact.label} className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80">
@@ -600,29 +600,29 @@ export default function AnalysisClient() {
                         )}
                         <div className="flex items-center gap-2 mt-4 ml-1">
                             <div className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-                            <p className="text-[10px] md:text-xs uppercase tracking-widest text-amber-200 font-bold opacity-80">StoryStock Analysis</p>
+                            <p className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-widest text-amber-200 font-bold opacity-80">StoryStock Analysis</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-4 md:items-end relative z-10 w-full md:w-auto md:min-w-[320px]">
-                    <div className="grid grid-cols-2 gap-4 text-right w-full">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 text-left md:text-right w-full">
                         <div className="col-span-2">
-                            <div className="text-xs text-slate-400 uppercase tracking-wide">Price</div>
-                            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent tracking-tight drop-shadow-sm whitespace-nowrap tabular-nums">{formatCurrency(data.price.current)}</div>
+                            <div className="text-xs text-slate-400 uppercase tracking-wide md:text-right">Price</div>
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent tracking-tight drop-shadow-sm break-words sm:whitespace-nowrap tabular-nums">{formatCurrency(data.price.current)}</div>
                             <p className="text-[11px] text-slate-400 font-medium mt-1 leading-relaxed">
                                 Price shown is from the previous market day and is not live market data.
                             </p>
                         </div>
                         <div>
-                            <div className="flex items-center justify-end gap-1 text-xs text-slate-400 uppercase tracking-wide">
+                            <div className="flex items-center justify-start md:justify-end gap-1 text-xs text-slate-400 uppercase tracking-wide">
                                 Market Cap
                                 <InfoTip metricKey="Market Cap" onClick={openExplanation} light />
                             </div>
                             <div className="text-lg font-bold text-white">{formatMarketCap(keyRatios.market_cap)}</div>
                         </div>
                         <div>
-                            <div className="flex items-center justify-end gap-1 text-xs text-slate-400 uppercase tracking-wide">
+                            <div className="flex items-center justify-start md:justify-end gap-1 text-xs text-slate-400 uppercase tracking-wide">
                                 Book Value
                                 <InfoTip metricKey="Book Value" onClick={openExplanation} light />
                             </div>
@@ -630,15 +630,15 @@ export default function AnalysisClient() {
                         </div>
                         <div className="col-span-2">
                             <div className="text-xs text-slate-400 uppercase tracking-wide">52W High/Low</div>
-                            <div className="text-sm font-semibold text-slate-100">{formatHighLow(keyRatios.high_low)}</div>
+                            <div className="text-xs sm:text-sm font-semibold text-slate-100">{formatHighLow(keyRatios.high_low)}</div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex flex-wrap items-center justify-start md:justify-end gap-2">
                         <Badge className="px-3 py-1 text-xs uppercase tracking-wider font-bold bg-emerald-500/20 text-emerald-200 border-emerald-500/30">Dividend Yield {formatPercent(keyRatios.dividend_yield)}</Badge>
                         <InfoTip metricKey="Dividend Yield" onClick={openExplanation} light />
                     </div>
                     <Button
-                        className="rounded-full shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 border-none font-bold px-6 hover:shadow-amber-500/25 hover:scale-105 transition-all duration-300 no-print disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        className="w-full md:w-auto justify-center rounded-full shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 border-none font-bold px-6 hover:shadow-amber-500/25 hover:scale-105 transition-all duration-300 no-print disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                         onClick={handleExportPDF}
                         disabled={pdfLoading}
                     >
@@ -653,7 +653,7 @@ export default function AnalysisClient() {
 
             {/* ═══ KEY METRICS DASHBOARD — 2 rows of 5 ═══ */}
             <div className="space-y-4 mb-10">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                     {keyMetricsRow1.map((metric) => (
                         <MetricCard
                             key={metric.label}
@@ -665,7 +665,7 @@ export default function AnalysisClient() {
                         />
                     ))}
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                     {keyMetricsRow2.map((metric) => (
                         <MetricCard
                             key={metric.label}
@@ -688,13 +688,13 @@ export default function AnalysisClient() {
                 {/* ═══ Left Column ═══ */}
                 <div className="lg:col-span-8 space-y-8">
                     {/* 1 ─ Stance Card */}
-                    <Card variant="elevated" className="overflow-hidden border-none bg-gradient-to-br from-orange-500 to-emerald-600 text-white p-8">
+                    <Card variant="elevated" className="overflow-hidden border-none bg-gradient-to-br from-orange-500 to-emerald-600 text-white p-5 md:p-8">
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-4 font-bold uppercase tracking-widest text-sm text-white/90">
                                 <ShieldCheck className="h-5 w-5" /> Overall Fundamental Stance
                                 <InfoTip metricKey="Overall Stance" onClick={openExplanation} light />
                             </div>
-                            <h2 className="text-3xl font-bold mb-4">{data.stance.overall_stance}</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold mb-4">{data.stance.overall_stance}</h2>
                             <div className="text-white/90 text-base leading-relaxed max-w-2xl font-medium whitespace-pre-line">
                                 {aiData.final_verdict || aiFallback}
                             </div>

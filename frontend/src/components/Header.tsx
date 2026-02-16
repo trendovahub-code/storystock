@@ -43,24 +43,29 @@ export function Header() {
 
     React.useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0)
+            setIsScrolled(window.scrollY > 8)
         }
-        window.addEventListener("scroll", handleScroll)
+        handleScroll()
+        window.addEventListener("scroll", handleScroll, { passive: true })
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
+
+    React.useEffect(() => {
+        setIsMobileMenuOpen(false)
+    }, [pathname])
 
     const isNavLinkActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href))
 
     return (
         <header
             className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-6",
+                "fixed top-0 left-0 right-0 z-50 h-16 md:h-20 px-4 md:px-6 transition-colors duration-300",
                 isScrolled
-                    ? "py-2 bg-slate-900/90 backdrop-blur-xl border-b border-white/[0.06] shadow-lg"
-                    : "py-4 bg-transparent"
+                    ? "bg-slate-900/90 backdrop-blur-xl border-b border-white/[0.06] shadow-lg"
+                    : "bg-transparent"
             )}
         >
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                 {/* Brand */}
                 <Link href="/" className="flex items-center group shrink-0">
                     <BrandLogo scrolled={isScrolled} />
@@ -108,7 +113,7 @@ export function Header() {
             {/* Mobile Nav */}
             {isMobileMenuOpen && (
                 <div className={cn(
-                    "md:hidden mt-3 p-3 rounded-xl backdrop-blur-xl border animate-in slide-in-from-top-2 duration-200",
+                    "md:hidden mt-2 p-3 rounded-xl backdrop-blur-xl border animate-in slide-in-from-top-2 duration-200",
                     isScrolled
                         ? "bg-slate-900/90 border-white/[0.08]"
                         : "bg-white/80 border-slate-200/60 shadow-lg"
