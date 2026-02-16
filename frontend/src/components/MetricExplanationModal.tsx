@@ -363,7 +363,7 @@ export function MetricExplanationModal({
 
     return (
         <Modal open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl p-0 overflow-hidden border border-slate-700 shadow-2xl rounded-2xl bg-slate-900 max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl p-0 overflow-hidden border border-slate-700 shadow-2xl rounded-2xl bg-slate-900 text-slate-100 max-h-[90vh] overflow-y-auto">
                 {/* Header */}
                 <div className="relative p-6 pb-5 border-b border-slate-700/50">
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-500/8 via-transparent to-emerald-500/8" />
@@ -376,7 +376,7 @@ export function MetricExplanationModal({
                                 <Badge variant="secondary" className="bg-slate-800 text-orange-300 border-orange-500/20 font-medium tracking-wide text-[10px] mb-1">
                                     Metric Deep Dive
                                 </Badge>
-                                <DialogTitle className="text-xl font-bold text-white tracking-tight leading-tight">
+                                <DialogTitle className="text-xl font-bold !text-white tracking-tight leading-tight">
                                     {explanation.title}
                                 </DialogTitle>
                             </div>
@@ -393,13 +393,13 @@ export function MetricExplanationModal({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {hasCurrentValue && (
                                 <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
-                                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Current Value</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Current Value</div>
                                     <div className="text-2xl font-extrabold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">{currentValue}</div>
                                 </div>
                             )}
                             {hasImpact && (
                                 <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
-                                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Impact Snapshot</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Impact Snapshot</div>
                                     <div className="text-sm font-medium text-slate-200 leading-relaxed">{impact}</div>
                                 </div>
                             )}
@@ -416,7 +416,7 @@ export function MetricExplanationModal({
                                 <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-400">
                                     <Landmark className="h-4 w-4" />
                                 </div>
-                                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wide">Why it Matters</h4>
+                                <h4 className="font-bold !text-white text-xs uppercase tracking-wide">Why it Matters</h4>
                             </div>
                             <p className="text-slate-300 text-sm leading-relaxed">{explanation.whyItMatters}</p>
                         </div>
@@ -427,7 +427,7 @@ export function MetricExplanationModal({
                                 <div className="p-1.5 rounded-lg bg-slate-700 text-slate-300">
                                     <Calculator className="h-4 w-4" />
                                 </div>
-                                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wide">How to Calculate</h4>
+                                <h4 className="font-bold !text-white text-xs uppercase tracking-wide">How to Calculate</h4>
                             </div>
                             <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-600">
                                 <code className="text-xs font-mono text-orange-300 font-semibold block break-words leading-relaxed">
@@ -442,7 +442,7 @@ export function MetricExplanationModal({
                                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
                                     <TrendingUp className="h-4 w-4" />
                                 </div>
-                                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wide">Signal Check</h4>
+                                <h4 className="font-bold !text-white text-xs uppercase tracking-wide">Signal Check</h4>
                             </div>
                             <p className="text-slate-300 text-sm leading-relaxed">{explanation.interpretation}</p>
                         </div>
@@ -453,7 +453,7 @@ export function MetricExplanationModal({
                                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
                                     <AlertCircle className="h-4 w-4" />
                                 </div>
-                                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wide">Risk Factor</h4>
+                                <h4 className="font-bold !text-white text-xs uppercase tracking-wide">Risk Factor</h4>
                             </div>
                             <p className="text-slate-300 text-sm leading-relaxed">{explanation.commonMisconceptions}</p>
                         </div>
