@@ -55,8 +55,15 @@ export default function ShareholdingCard({
                                     </Pie>
                                     <Tooltip
                                         formatter={(value, name) => [`${value}%`, String(name)]}
-                                        contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 12, fontSize: 13 }}
+                                        contentStyle={{
+                                            background: "#0f172a",
+                                            border: "1px solid #334155",
+                                            borderRadius: 12,
+                                            fontSize: 13,
+                                            color: "#e2e8f0",
+                                        }}
                                         labelStyle={{ color: "#e2e8f0", fontWeight: 600 }}
+                                        itemStyle={{ color: "#e2e8f0" }}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
