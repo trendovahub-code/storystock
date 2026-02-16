@@ -61,38 +61,39 @@ export default function AnimatedBackground() {
     if (!mounted) return null;
 
     return (
-        <div className="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
+        <div className="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-[#fff7ed] via-[#fef3c7] to-[#ecfdf3]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.16),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.18),transparent_55%)] animate-gradient bg-[length:200%_200%]" />
             {/* Subtle Grid Overlay */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] pointer-events-none" />
 
             {/* Animated Orbs */}
             <Orb
-                color="bg-indigo-400"
-                size={400}
-                initialX="20%"
-                initialY="30%"
-                duration={25}
+                color="bg-orange-400"
+                size={420}
+                initialX="18%"
+                initialY="28%"
+                duration={26}
             />
             <Orb
-                color="bg-purple-400"
-                size={500}
+                color="bg-emerald-400"
+                size={520}
                 initialX="80%"
                 initialY="70%"
                 duration={30}
             />
             <Orb
-                color="bg-emerald-400"
-                size={350}
-                initialX="50%"
-                initialY="50%"
-                duration={20}
+                color="bg-amber-400"
+                size={360}
+                initialX="48%"
+                initialY="52%"
+                duration={22}
             />
             <Orb
-                color="bg-amber-400"
-                size={300}
-                initialX="10%"
-                initialY="90%"
-                duration={35}
+                color="bg-lime-400"
+                size={320}
+                initialX="12%"
+                initialY="88%"
+                duration={34}
             />
         </div>
     );

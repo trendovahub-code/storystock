@@ -2,21 +2,44 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { Menu, X, BarChart3 } from "lucide-react"
-import { Button } from "@/components/ui/Button"
+import { usePathname } from "next/navigation"
+import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navLinks = [
-    { name: "How It Works", href: "/how-it-works" },
+    { name: "Home", href: "/" },
+    { name: "Markets", href: "/markets" },
     { name: "About", href: "/about" },
+    { name: "Contact Us", href: "/contact" },
 ]
+
+function BrandLogo({ scrolled }: { scrolled: boolean }) {
+    return (
+        <div className="flex items-baseline gap-1.5 select-none">
+            <span
+                className={cn(
+                    "text-xl md:text-2xl font-extrabold tracking-tight transition-colors duration-300",
+                    scrolled ? "text-white" : "text-slate-800"
+                )}
+            >
+                Story<span className="text-orange-500">Stock</span>
+            </span>
+            <span
+                className={cn(
+                    "hidden sm:inline text-[11px] font-medium tracking-wide transition-colors duration-300",
+                    scrolled ? "text-slate-400" : "text-slate-500"
+                )}
+            >
+                by Trendova Hub
+            </span>
+        </div>
+    )
+}
 
 export function Header() {
     const [isScrolled, setIsScrolled] = React.useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
     const pathname = usePathname()
-    const router = useRouter()
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -26,88 +49,93 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
-    const handleGetStarted = () => {
-        setIsMobileMenuOpen(false)
-        if (pathname === '/') {
-            window.scrollTo({ top: 400, behavior: 'smooth' });
-        } else {
-            router.push('/');
-        }
-    }
+    const isNavLinkActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href))
 
     return (
         <header
             className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4",
+                "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-6",
                 isScrolled
-                    ? "py-3 bg-white/70 backdrop-blur-lg border-b border-slate-200"
-                    : "py-6 bg-transparent"
+                    ? "py-2 bg-slate-900/90 backdrop-blur-xl border-b border-white/[0.06] shadow-lg"
+                    : "py-4 bg-transparent"
             )}
         >
             <div className="max-w-7xl mx-auto flex items-center justify-between">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center text-white shadow-lg shadow-primary-500/30 group-hover:scale-105 transition-transform">
-                        <BarChart3 className="w-6 h-6" />
-                    </div>
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
-                        Asset Analysis
-                    </span>
+                {/* Brand */}
+                <Link href="/" className="flex items-center group shrink-0">
+                    <BrandLogo scrolled={isScrolled} />
                 </Link>
 
                 {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-8">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={cn(
-                                "text-sm font-medium transition-colors hover:text-primary-500",
-                                pathname === link.href ? "text-primary-500" : "text-slate-600"
-                            )}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        className="rounded-full px-6 cursor-pointer"
-                        onClick={handleGetStarted}
-                    >
-                        Get Started
-                    </Button>
+                <nav className="hidden md:flex items-center gap-1.5">
+                    {navLinks.map((link) => {
+                        const isActive = isNavLinkActive(link.href)
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-full text-sm font-semibold tracking-[0.01em] transition-all duration-200",
+                                    isScrolled
+                                        ? isActive
+                                            ? "text-white bg-orange-500/20 border border-orange-500/30"
+                                            : "text-slate-300 hover:text-white hover:bg-white/10 border border-transparent"
+                                        : isActive
+                                            ? "text-orange-600 bg-orange-500/10 border border-orange-500/20"
+                                            : "text-slate-700 hover:text-orange-600 hover:bg-orange-50/60 border border-transparent"
+                                )}
+                            >
+                                {link.name}
+                            </Link>
+                        )
+                    })}
                 </nav>
 
-                {/* Mobile Menu Toggle */}
+                {/* Mobile Toggle */}
                 <button
-                    className="md:hidden text-slate-600 p-2"
+                    className={cn(
+                        "md:hidden p-2 transition-colors rounded-lg",
+                        isScrolled
+                            ? "text-white/70 hover:text-white"
+                            : "text-slate-600 hover:text-slate-900"
+                    )}
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
-                    {isMobileMenuOpen ? <X /> : <Menu />}
+                    {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
             </div>
 
             {/* Mobile Nav */}
             {isMobileMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-200 p-4 animate-in slide-in-from-top-4 duration-200">
-                    <nav className="flex flex-col gap-4">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className={cn(
-                                    "text-base font-medium p-2 rounded-lg",
-                                    pathname === link.href ? "bg-primary-50 text-primary-500" : "text-slate-600"
-                                )}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                        <Button variant="primary" className="w-full mt-2 cursor-pointer" onClick={handleGetStarted}>
-                            Get Started
-                        </Button>
+                <div className={cn(
+                    "md:hidden mt-3 p-3 rounded-xl backdrop-blur-xl border animate-in slide-in-from-top-2 duration-200",
+                    isScrolled
+                        ? "bg-slate-900/90 border-white/[0.08]"
+                        : "bg-white/80 border-slate-200/60 shadow-lg"
+                )}>
+                    <nav className="flex flex-col gap-1">
+                        {navLinks.map((link) => {
+                            const isActive = isNavLinkActive(link.href)
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={cn(
+                                        "text-sm font-medium px-4 py-2.5 rounded-lg transition-all",
+                                        isScrolled
+                                            ? isActive
+                                                ? "text-white bg-orange-500/15"
+                                                : "text-white/60 hover:text-white/90 hover:bg-white/[0.05]"
+                                            : isActive
+                                                ? "text-orange-600 bg-orange-50"
+                                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                                    )}
+                                >
+                                    {link.name}
+                                </Link>
+                            )
+                        })}
                     </nav>
                 </div>
             )}

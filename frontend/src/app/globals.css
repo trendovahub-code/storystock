@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Professional Color Palette */
-  --color-primary-50: oklch(0.97 0.01 250);
-  --color-primary-100: oklch(0.93 0.03 250);
-  --color-primary-200: oklch(0.85 0.07 250);
-  --color-primary-500: oklch(0.5 0.15 250);
-  /* Deep Indigo */
-  --color-primary-600: oklch(0.4 0.15 250);
-  --color-primary-700: oklch(0.3 0.15 250);
-  --color-primary-900: oklch(0.15 0.1 250);
+  /* Brand Color Palette — Orange (#F27A1A) / Green (#00C853) */
+  --color-primary-50: oklch(0.97 0.02 60);
+  --color-primary-100: oklch(0.93 0.04 60);
+  --color-primary-200: oklch(0.85 0.08 55);
+  --color-primary-500: oklch(0.65 0.18 50);
+  /* Brand Orange */
+  --color-primary-600: oklch(0.58 0.18 48);
+  --color-primary-700: oklch(0.48 0.16 48);
+  --color-primary-900: oklch(0.28 0.1 48);
 
   --color-success-500: oklch(0.6 0.15 150);
   /* Professional Green */
@@ -26,11 +26,18 @@
   --color-danger-700: oklch(0.4 0.2 25);
   --color-danger-900: oklch(0.2 0.15 25);
 
-  --color-slate-50: oklch(0.98 0.005 250);
-  --color-slate-400: oklch(0.6 0.02 250);
-  --color-slate-500: oklch(0.5 0.02 250);
-  --color-slate-700: oklch(0.3 0.02 250);
-  --color-slate-900: oklch(0.2 0.02 250);
+  /* Tier 1 - Deep Ink Navy (Primary) */
+  --color-slate-900: #0B1220;
+  /* Tier 2 - Cool Slate (Secondary) */
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748B;
+  /* Tier 3 - Muted Slate (Tertiary) */
+  --color-slate-400: #94A3B8;
+  --color-slate-300: #CBD5E1;
+  --color-slate-200: #E2E8F0;
+  --color-slate-100: #F1F5F9;
+  --color-slate-50: #F8FAFC;
 
   /* Custom Animations */
   --animate-slide-down: slide-down 0.4s ease-out;
@@ -77,70 +84,44 @@
 }
 
 :root {
-  --background: var(--color-slate-50);
-  --foreground: var(--color-slate-900);
+  --background: #FFF7ED;
+  --foreground: #1F2937;
+  /* Warm ivory base */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--color-primary-900);
-    --foreground: var(--color-primary-50);
+    --background: #0B1220;
+    --foreground: #F8FAFC;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-sora), system-ui, sans-serif;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media print {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: inherit;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
 
-  header,
-  button,
-  .no-print,
-  #animated-background,
-  aside {
-    display: none !important;
-  }
+/* Custom Utility to hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  main {
-    padding-top: 0 !important;
-    margin: 0 !important;
-  }
-
-  .max-w-7xl {
-    max-width: 100% !important;
-  }
-
-  .animate-slide-down {
-    animation: none !important;
-    transform: none !important;
-  }
-
-  /* Force visibility of glassmorphism elements as solid white on print */
-  .backdrop-blur-md,
-  .bg-white\/40,
-  .bg-white\/80 {
-    backdrop-filter: none !important;
-    background: white !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: none !important;
-  }
-
-  /* Ensure text is black and bold for headers */
-  h1,
-  h2,
-  h3,
-  h4,
-  .font-bold {
-    color: black !important;
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

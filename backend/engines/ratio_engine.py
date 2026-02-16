@@ -10,7 +10,7 @@ class RatioEngine:
         balance_sheet = financials.get("balance_sheet", {})
         cashflow = financials.get("cashflow", {})
         
-        # Extract latest values (handling yfinance dict structure)
+        # Extract latest values (handling date-keyed dict structure)
         def get_value(stmt: Dict[str, Any], field: str, periods_ago: int = 0) -> Optional[float]:
             try:
                 dates = sorted(stmt.keys(), reverse=True)

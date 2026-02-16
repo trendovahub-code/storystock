@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Union
+from typing import Optional, List, Dict, Union, Any
 from datetime import datetime
+import re
 
 class MetricValue(BaseModel):
     value: Union[float, int, None]
     unit: str
-    source: str  # 'yfinance', 'nsepython', 'computed'
+    source: str  # 'screener', 'computed'
     reliability: str = 'high'  # 'high', 'medium', 'low'
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     computation_formula: Optional[str] = None

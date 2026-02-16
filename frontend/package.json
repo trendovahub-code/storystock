@@ -1,7 +1,8 @@
 {
-  "name": "frontend",
+  "name": "trendova-hub",
   "version": "0.1.0",
   "private": true,
+  "description": "Trendova Hub - stock market analysis and insights for Indian NSE stocks.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

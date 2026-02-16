@@ -13,7 +13,7 @@ class AnalysisService:
         self.llm_orchestrator = LLMOrchestrator()
         self.integrity_rules = DataIntegrityRules()
 
-    def perform_full_analysis(self, data_context: Dict[str, Any]) -> Dict[str, Any]:
+    def perform_full_analysis(self, data_context: Dict[str, Any], include_ai: bool = True) -> Dict[str, Any]:
         """
         Runs the end-to-end analysis on the provided data context.
         """
@@ -35,7 +35,9 @@ class AnalysisService:
             "stance": stance_result,
             "benchmarks": benchmarks
         }
-        ai_insights = self.llm_orchestrator.generate_all_perspectives(analysis_context)
+        ai_insights = None
+        if include_ai:
+            ai_insights = self.llm_orchestrator.generate_all_perspectives(analysis_context)
 
         # 5. Data Integrity Check (Audit)
         validation_errors = []
@@ -52,10 +54,21 @@ class AnalysisService:
             "ratios": ratios,
             "stance": stance_result,
             "benchmarks": benchmarks,
-            "ai_insights": ai_insights,
+            "shareholding": data_context.get("shareholding", {}),
+            "key_ratios": data_context.get("key_ratios", {}),
+            "financials": data_context.get("financials", {}),
+            "ai_insights": ai_insights or {
+                "analyst": "",
+                "contrarian": "",
+                "educator": "",
+                "final_verdict": ""
+            },
             "integrity_audit": {
                 "is_valid": len(validation_errors) == 0,
                 "warnings": validation_errors,
                 "data_completeness": data_context.get("quality_audit")
             }
         }
+
+    def generate_ai_insights(self, analysis_context: Dict[str, Any]) -> Dict[str, Any]:
+        return self.llm_orchestrator.generate_all_perspectives(analysis_context)

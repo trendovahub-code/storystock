@@ -1,48 +1,121 @@
+"""
+Data Merger – single-source architecture.
+
+Fetches all company data from the ScreenerProvider (screener.in) and
+assembles it into the unified data_context consumed by the analysis
+engines (RatioEngine, StanceEngine, BenchmarkingEngine, LLMOrchestrator).
+"""
+
 from datetime import datetime
-from typing import Dict, Any, List
-from providers.yfinance_provider import YFinanceProvider
-from providers.nse_provider import NSEPythonProvider
+from typing import Dict, Any, Optional, Set
+import threading
+import time
+import logging
+
+from providers.screener_provider import ScreenerProvider
+
+logger = logging.getLogger(__name__)
+
 
 class DataMerger:
+    _pending_lock = threading.Lock()
+    _pending_requests: Dict[str, Dict[str, Any]] = {}
+    _coalesce_window = 0.05
+
     def __init__(self):
-        self.yf_provider = YFinanceProvider()
-        self.nse_provider = NSEPythonProvider()
+        self.screener = ScreenerProvider()
 
-    def merge_stock_data(self, symbol: str) -> Dict[str, Any]:
+    def merge_stock_data(self, symbol: str, include: Optional[Set[str]] = None) -> Dict[str, Any]:
         """
-        Fetches data from all providers and merges it into a unified context.
+        Fetches data from screener.in and assembles a unified context.
+        Request coalescing prevents duplicate concurrent requests for the same symbol.
         """
-        # Concurrent fetching could be added later for performance
-        yf_info = self.yf_provider.get_stock_info(symbol)
-        nse_info = self.nse_provider.get_stock_info(symbol)
-        
-        yf_financials = self.yf_provider.get_financials(symbol)
-        yf_history = self.yf_provider.get_price_history(symbol)
-        nse_price = self.nse_provider.get_price_history(symbol)
+        symbol_key = symbol.upper()
+        is_owner = False
+        with self._pending_lock:
+            entry = self._pending_requests.get(symbol_key)
+            if entry:
+                event = entry["event"]
+            else:
+                event = threading.Event()
+                entry = {"event": event, "result": None, "error": None}
+                self._pending_requests[symbol_key] = entry
+                is_owner = True
 
-        # Merge Logic: NSE info takes priority for name/industry if available
-        # yfinance financials are the primary source
-        merged_context = {
+        if not is_owner:
+            event.wait()
+            if entry["error"]:
+                raise entry["error"]
+            return entry["result"]
+
+        try:
+            time.sleep(self._coalesce_window)
+            result = self._build_context(symbol, include)
+            entry["result"] = result
+            return result
+        except Exception as e:
+            entry["error"] = e
+            raise
+        finally:
+            entry["event"].set()
+            with self._pending_lock:
+                self._pending_requests.pop(symbol_key, None)
+
+    def _build_context(self, symbol: str, include: Optional[Set[str]]) -> Dict[str, Any]:
+        include_set = {item.lower() for item in include} if include else {
+            "profile", "financials", "history", "price"
+        }
+
+        need_full = (
+            "financials" in include_set
+            or "profile" in include_set
+            or "basic" in include_set
+            or "price" in include_set
+        )
+
+        raw: Dict[str, Any] = {}
+        if need_full:
+            try:
+                raw = self.screener.get_full_data(symbol)
+            except Exception as e:
+                logger.error("[Merger] Screener fetch failed for %s: %s", symbol, e)
+                raw = {}
+
+        financials = raw.get("financials", {})
+        key_ratios = raw.get("key_ratios", {})
+        shareholding = raw.get("shareholding", {})
+        price = raw.get("current_price")
+        name = raw.get("name")
+        description = raw.get("description")
+        confidence = raw.get("confidence", 0)
+
+        merged_context: Dict[str, Any] = {
             "symbol": symbol.upper(),
             "profile": {
-                "name": nse_info.get("name") or yf_info.get("name"),
-                "sector": yf_info.get("sector"),
-                "industry": nse_info.get("industry") or yf_info.get("industry"),
-                "description": yf_info.get("description"),
-                "isin": nse_info.get("isin"),
-                "listing_date": nse_info.get("listing_date")
+                "name": name,
+                "sector": None,
+                "industry": None,
+                "description": description,
+                "isin": None,
+                "listing_date": None,
             },
             "price": {
-                "current": nse_price.get("last_price") or yf_info.get("current_price"),
+                "current": price,
                 "date": datetime.now().strftime("%d %b %Y"),
-                "history": yf_history.get("history", []),
-                "currency": yf_info.get("currency") or "INR"
+                "history": [],
+                "currency": "INR",
             },
-            "financials": yf_financials,
+            "financials": financials,
+            "shareholding": shareholding,
             "quality_audit": {
-                "yf_available": bool(yf_info),
-                "nse_available": bool(nse_info)
-            }
+                "screener_available": bool(raw),
+                "confidence": confidence,
+                "sections_found": raw.get("sections_found", []),
+                "scraper_version": raw.get("scraper_version"),
+                "scraped_at": raw.get("scraped_at"),
+                "source_url": raw.get("source_url"),
+            },
+            "key_ratios": key_ratios,
         }
 
         return merged_context

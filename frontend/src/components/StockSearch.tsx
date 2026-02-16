@@ -13,8 +13,12 @@ interface StockResult {
     symbol: string
     name: string
     sector: string
+    exchange?: string
     marketCap?: string
     priceChange?: number
+    price?: number | string
+    currentPrice?: number | string
+    ltp?: number | string
 }
 
 export function StockSearch() {
@@ -62,7 +66,7 @@ export function StockSearch() {
         const fetchResults = async () => {
             setIsLoading(true)
             try {
-                const res = await fetch(`http://localhost:5000/api/search?q=${debouncedQuery}`)
+                const res = await fetch(`http://localhost:5002/api/search?q=${debouncedQuery}`)
                 const data = await res.json()
 
                 if (data.results) {
@@ -111,10 +115,25 @@ export function StockSearch() {
         }
     }
 
+    const formatPrice = (value?: number | string) => {
+        if (value === null || value === undefined) return ""
+        if (typeof value === "number") {
+            return `₹${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(value)}`
+        }
+        const cleaned = value.trim()
+        if (!cleaned) return ""
+        const normalized = cleaned.replace(/[₹,\s]/g, "")
+        const parsed = Number(normalized)
+        if (!Number.isNaN(parsed)) {
+            return `₹${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(parsed)}`
+        }
+        return cleaned
+    }
+
     return (
         <div ref={containerRef} className="relative w-full max-w-2xl mx-auto z-40">
-            <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="relative group/search">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-orange-500 transition-colors z-10">
                     {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
                 </div>
                 <Input
@@ -125,15 +144,15 @@ export function StockSearch() {
                     }}
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsOpen(true)}
-                    placeholder="Search NSE stocks (e.g., RELIANCE, TCS)"
-                    className="pl-12 pr-10 h-14 text-lg text-slate-900 rounded-2xl shadow-lg border-none bg-white/90 backdrop-blur-md focus-visible:ring-primary-400"
+                    placeholder="Search by company or symbol…"
+                    className="pl-14 pr-12 h-[56px] text-lg text-slate-800 placeholder:text-slate-400 placeholder:font-normal rounded-2xl border border-slate-200/60 bg-white/90 backdrop-blur-sm transition-all ring-offset-0 ring-0 ring-transparent focus-visible:ring-2 focus-visible:ring-orange-500/30 focus-visible:border-orange-300 shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)]"
                 />
                 {query && (
                     <button
                         onClick={() => setQuery("")}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 p-2 z-10 transition-colors"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-5 w-5" />
                     </button>
                 )}
             </div>
@@ -153,19 +172,28 @@ export function StockSearch() {
                                 onClick={() => handleSelect(stock)}
                                 onMouseEnter={() => setSelectedIndex(index)}
                                 className={cn(
-                                    "flex items-center justify-between w-full px-4 py-3 rounded-xl transition-colors text-left",
+                                    "flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl transition-colors text-left",
                                     selectedIndex === index ? "bg-primary-50" : "hover:bg-slate-50"
                                 )}
                             >
-                                <div className="flex flex-col">
+                                <div className="flex flex-col min-w-0 flex-1">
                                     <span className="font-bold text-slate-900">{stock.symbol}</span>
                                     <span className="text-sm text-slate-500 line-clamp-1">{stock.name}</span>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <Badge variant="secondary" className="opacity-70">{stock.sector}</Badge>
+                                <div className="flex items-center justify-end gap-2 shrink-0 flex-wrap">
+                                    {(() => {
+                                        const rawPrice = stock.currentPrice ?? stock.price ?? stock.ltp
+                                        const displayPrice = formatPrice(rawPrice)
+                                        if (!displayPrice) return null
+                                        return <span className="text-sm font-semibold text-slate-700 tabular-nums whitespace-nowrap">{displayPrice}</span>
+                                    })()}
+                                    {stock.exchange && (
+                                        <Badge variant="outline" className="text-xs opacity-60 whitespace-nowrap">{stock.exchange}</Badge>
+                                    )}
+                                    <Badge variant="secondary" className="opacity-70 whitespace-nowrap">{stock.sector}</Badge>
                                     {stock.priceChange !== undefined && (
                                         <span className={cn(
-                                            "text-sm font-medium",
+                                            "text-sm font-medium tabular-nums whitespace-nowrap",
                                             stock.priceChange >= 0 ? "text-success-500" : "text-danger-500"
                                         )}>
                                             {stock.priceChange >= 0 ? "+" : ""}{stock.priceChange}%
@@ -177,10 +205,13 @@ export function StockSearch() {
 
                         {query.length >= 2 && results.length === 0 && !isLoading && (
                             <div className="px-4 py-8 text-center">
-                                <p className="text-slate-500">No stocks found for &quot;{query}&quot;</p>
-                                <p className="text-xs text-slate-400 mt-1">Try company name or NSE symbol</p>
+                                <p className="text-slate-500">No stocks found on Trendova Hub. Try another search.</p>
+                                <p className="text-xs text-slate-400 mt-1">Try company name or BSE/NSE symbol</p>
                             </div>
                         )}
+                        <div className="px-4 py-3 text-xs text-slate-400 border-t border-slate-100">
+                            Powered by Trendova Hub
+                        </div>
                     </div>
                 </Card>
             )}
