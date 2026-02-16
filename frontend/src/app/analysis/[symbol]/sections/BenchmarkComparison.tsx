@@ -34,10 +34,10 @@ export default function BenchmarkComparison({
         <Card className="bg-slate-800 border-slate-700 shadow-xl overflow-hidden">
             <CardHeader className="pb-3 border-b border-slate-700">
                 <div className="flex items-center gap-3">
-                    <CardTitle className="text-sm font-bold uppercase tracking-widest text-white">Sector Benchmarks</CardTitle>
+                    <CardTitle className="text-sm font-bold uppercase tracking-widest !text-white">Sector Benchmarks</CardTitle>
                     <InfoTip metricKey="ROE" onClick={onInfo} light />
                 </div>
-                <CardDescription className="text-xs font-semibold text-slate-500">vs {sector || "Default"} averages</CardDescription>
+                <CardDescription className="text-xs font-semibold text-slate-300">vs {sector || "Default"} averages</CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
                 {hasData ? (
