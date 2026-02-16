@@ -7,12 +7,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs"
-import { ArrowLeft, Download, TrendingUp, TrendingDown, AlertTriangle, ShieldCheck } from "lucide-react"
+import { ArrowLeft, Download, Share2, TrendingUp, TrendingDown, AlertTriangle, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { apiUrl } from "@/lib/api"
 import { MetricExplanationModal } from "@/components/MetricExplanationModal"
 import { InfoTip } from "@/components/InfoTip"
+import toast from "react-hot-toast"
 import FinancialCharts from "./sections/FinancialCharts"
 import ShareholdingCard from "./sections/ShareholdingCard"
 import FundamentalScorecard from "./sections/FundamentalScorecard"
@@ -129,26 +130,61 @@ export default function AnalysisClient() {
     const [aiInsights, setAiInsights] = useState<AnalysisData["ai_insights"] | null>(null)
     const [aiLoading, setAiLoading] = useState(false)
     const [pdfLoading, setPdfLoading] = useState(false)
+    const [shareLoading, setShareLoading] = useState(false)
+
+    const getReportUrl = (hasInsights: boolean) => apiUrl(`/api/report/${symbol}?insights=${hasInsights}`)
 
     const handleExportPDF = async () => {
         setPdfLoading(true)
         try {
             const hasInsights = !!(aiInsights?.analyst || aiInsights?.contrarian || aiInsights?.educator || aiInsights?.final_verdict)
-            const res = await fetch(apiUrl(`/api/report/${symbol}?insights=${hasInsights}`))
-            if (!res.ok) throw new Error("PDF generation failed")
-            const blob = await res.blob()
-            const url = URL.createObjectURL(blob)
+            const url = getReportUrl(hasInsights)
             const a = document.createElement("a")
             a.href = url
-            a.download = res.headers.get("Content-Disposition")?.match(/filename="?(.+?)"?$/)?.[1] || `${symbol.toUpperCase()}_Analysis.pdf`
+            a.target = "_blank"
+            a.rel = "noopener noreferrer"
             document.body.appendChild(a)
             a.click()
             a.remove()
-            URL.revokeObjectURL(url)
         } catch (err) {
             console.error("PDF export failed", err)
         } finally {
             setPdfLoading(false)
+        }
+    }
+
+    const handleSharePDF = async () => {
+        setShareLoading(true)
+        try {
+            const hasInsights = !!(aiInsights?.analyst || aiInsights?.contrarian || aiInsights?.educator || aiInsights?.final_verdict)
+            const reportUrl = getReportUrl(hasInsights)
+            const shareData = {
+                title: `${symbol.toUpperCase()} Analysis Report`,
+                text: `Stock analysis report for ${symbol.toUpperCase()} from StoryStock.`,
+                url: reportUrl,
+            }
+
+            if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+                await navigator.share(shareData)
+                return
+            }
+
+            await navigator.clipboard.writeText(reportUrl)
+            toast.success("Report link copied. Share it anywhere.")
+        } catch (err) {
+            if (err instanceof DOMException && err.name === "AbortError") {
+                return
+            }
+            const hasInsights = !!(aiInsights?.analyst || aiInsights?.contrarian || aiInsights?.educator || aiInsights?.final_verdict)
+            const reportUrl = getReportUrl(hasInsights)
+            try {
+                await navigator.clipboard.writeText(reportUrl)
+                toast.success("Report link copied. Share it anywhere.")
+            } catch {
+                toast.error("Unable to share right now. Please try again.")
+            }
+        } finally {
+            setShareLoading(false)
         }
     }
 
@@ -637,17 +673,26 @@ export default function AnalysisClient() {
                         <Badge className="px-3 py-1 text-xs uppercase tracking-wider font-bold bg-emerald-500/20 text-emerald-200 border-emerald-500/30">Dividend Yield {formatPercent(keyRatios.dividend_yield)}</Badge>
                         <InfoTip metricKey="Dividend Yield" onClick={openExplanation} light />
                     </div>
-                    <Button
-                        className="w-full md:w-auto justify-center rounded-full shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 border-none font-bold px-6 hover:shadow-amber-500/25 hover:scale-105 transition-all duration-300 no-print disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        onClick={handleExportPDF}
-                        disabled={pdfLoading}
-                    >
-                        {pdfLoading ? (
-                            <><div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" /> Generating...</>
-                        ) : (
-                            <><Download className="h-4 w-4 mr-2" /> Export PDF</>
-                        )}
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <Button
+                            className="w-full md:w-auto justify-center rounded-full shadow-lg bg-white/10 text-white border border-white/20 hover:bg-white/20 font-bold px-6 transition-all duration-300 no-print"
+                            onClick={handleSharePDF}
+                            loading={shareLoading}
+                        >
+                            <Share2 className="h-4 w-4 mr-2" /> Share PDF
+                        </Button>
+                        <Button
+                            className="w-full md:w-auto justify-center rounded-full shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 border-none font-bold px-6 hover:shadow-amber-500/25 hover:scale-105 transition-all duration-300 no-print disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            onClick={handleExportPDF}
+                            disabled={pdfLoading}
+                        >
+                            {pdfLoading ? (
+                                <><div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" /> Generating...</>
+                            ) : (
+                                <><Download className="h-4 w-4 mr-2" /> Export PDF</>
+                            )}
+                        </Button>
+                    </div>
                 </div>
             </div>
 
