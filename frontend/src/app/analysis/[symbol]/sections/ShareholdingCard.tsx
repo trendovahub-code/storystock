@@ -36,7 +36,7 @@ export default function ShareholdingCard({
             <CardHeader className="border-b border-slate-700">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-lg font-bold text-white">Shareholding Pattern</CardTitle>
+                        <CardTitle className="text-lg font-bold !text-white">Shareholding Pattern</CardTitle>
                         <CardDescription className="text-slate-400">Ownership snapshot from latest filings</CardDescription>
                     </div>
                     <InfoTip metricKey="Shareholding Pattern" onClick={onInfo} light />

@@ -757,7 +757,7 @@ export default function AnalysisClient() {
                                     <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
                                         <TrendingUp className="h-5 w-5 text-orange-400" />
                                     </div>
-                                    <CardTitle className="text-xl font-bold tracking-tight text-white">Financial Metrics</CardTitle>
+                                    <CardTitle className="text-xl font-bold tracking-tight !text-white">Financial Metrics</CardTitle>
                                     <InfoTip metricKey="ROE" onClick={openExplanation} light />
                                 </div>
                             </div>
@@ -814,7 +814,7 @@ export default function AnalysisClient() {
                                 <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                                     <ShieldCheck className="h-5 w-5 text-emerald-400" />
                                 </div>
-                                <CardTitle className="text-lg font-bold text-white">Financial Integrity Audit</CardTitle>
+                                <CardTitle className="text-lg font-bold !text-white">Financial Integrity Audit</CardTitle>
                                 <InfoTip metricKey="Audit Status" onClick={openExplanation} light />
                             </div>
                         </CardHeader>

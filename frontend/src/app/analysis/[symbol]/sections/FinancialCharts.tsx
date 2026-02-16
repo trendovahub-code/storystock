@@ -156,7 +156,7 @@ export default function FinancialCharts({
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
-                            <CardTitle className="text-xl font-bold text-white">Financial Trend Charts</CardTitle>
+                            <CardTitle className="text-xl font-bold !text-white">Financial Trend Charts</CardTitle>
                             <InfoTip metricKey="Revenue Growth" onClick={onInfo} light />
                         </div>
                         <CardDescription className="text-slate-400">Multi-year performance across revenue, balance sheet, cash flow &amp; efficiency</CardDescription>

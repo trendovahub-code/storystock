@@ -44,7 +44,7 @@ export default function FundamentalScorecard({
         <Card className="bg-slate-800 border-slate-700 shadow-xl overflow-hidden">
             <CardHeader className="border-b border-slate-700">
                 <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg font-bold text-white">Fundamental Scorecard</CardTitle>
+                    <CardTitle className="text-lg font-bold !text-white">Fundamental Scorecard</CardTitle>
                     <InfoTip metricKey="Overall Stance" onClick={onInfo} light />
                 </div>
                 <CardDescription className="text-slate-400 font-medium">Simple breakdown across the 3 core pillars</CardDescription>

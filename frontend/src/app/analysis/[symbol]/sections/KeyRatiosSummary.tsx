@@ -54,7 +54,7 @@ export default function KeyRatiosSummary({
         <Card className="bg-slate-800 border-slate-700 shadow-xl overflow-hidden">
             <CardHeader className="border-b border-slate-700">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-bold uppercase tracking-widest text-white">Key Ratios Summary</CardTitle>
+                    <CardTitle className="text-sm font-bold uppercase tracking-widest !text-white">Key Ratios Summary</CardTitle>
                     <InfoTip metricKey="Market Cap" onClick={onInfo} light />
                 </div>
             </CardHeader>
