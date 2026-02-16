@@ -599,7 +599,14 @@ export default function AnalysisClient() {
                     </Link>
                     <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.6)" }}>{data.symbol}</h1>
+                            <h1
+                                className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight !text-amber-100"
+                                style={{
+                                    textShadow: "0 2px 12px rgba(245,158,11,0.28), 2px 2px 4px rgba(0,0,0,0.55)",
+                                }}
+                            >
+                                {data.symbol}
+                            </h1>
                             <div className="flex items-center gap-2">
                                 <Badge className="px-2.5 md:px-3 py-1 text-[10px] sm:text-xs md:text-sm uppercase tracking-wider font-bold whitespace-nowrap bg-white/10 text-white border-white/20 backdrop-blur-md shadow-sm">{data.stance.overall_stance}</Badge>
                                 <InfoTip metricKey="Overall Stance" onClick={openExplanation} light />
